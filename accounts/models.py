@@ -41,31 +41,41 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name=_("email"),
         unique=True
     )
-    first_name = models.CharField(
-        verbose_name=_("first_name"),
+    name = models.CharField(
+        verbose_name=_("name"),
         max_length=150,
         null=True,
         blank=False
     )
-    last_name = models.CharField(
-        verbose_name=_("last_name"),
-        max_length=150,
-        null=True,
-        blank=False
-    )
-    age = models.PositiveIntegerField()
-    sex = models.CharField(max_length=10)
+    age = models.PositiveIntegerField(blank=True, null=True)
+    sex = models.CharField(max_length=10, blank=True, null=True)
     contact_address = models.CharField(
         verbose_name=("contact_address"),
         max_length=150,
         null=True,
-        blank=False
+        blank=True
     )
     cur_matching = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='current_match')  # 現在のマッチ
-    matching_history = models.ManyToManyField('self', related_name='match_history', blank=True)  # マッチング履歴
+    matching_history = models.ManyToManyField('self', symmetrical=False)
     bio = models.TextField(blank=True, null=True)
+    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
     wait = models.BooleanField(default=False)  # 待機中かどうかを示すフラグ
     done = models.BooleanField(default=True)  # マッチングが完了したかどうかを示すフラグ
+    review_count = models.PositiveIntegerField(default=0)  # レビュー数
+    review_sum = models.PositiveIntegerField(default=0)    # レビューの合計点
+    semi_comp = models.BooleanField(default=False)
+
+    @property
+    def review_average(self):
+        if self.review_count > 0:
+            return self.review_sum / self.review_count
+        return 0.0
+
+    def add_review(self, rating):
+        self.review_count += 1
+        self.review_sum += rating
+        self.save()
+
     is_superuser = models.BooleanField(
         verbose_name=_("is_superuer"),
         default=False
@@ -90,7 +100,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'age', 'sex']  # スーパーユーザー作成時にemailも設定する
+    REQUIRED_FIELDS = ['name']  # スーパーユーザー作成時にemailも設定する
 
     def __str__(self):
         return self.email

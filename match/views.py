@@ -6,6 +6,8 @@ from accounts.serializers import UserSerializer
 from .models import MaleQueue, FemaleQueue
 from django.contrib.auth import get_user_model
 
+import logging
+
 User = get_user_model()
 
 class AddToQueueView(APIView):
@@ -13,10 +15,10 @@ class AddToQueueView(APIView):
         user = request.user
 
         # ユーザーの性別に基づいてキューを決定
-        if user.sex == 'male':
+        if user.sex == 'Male':
             queue, created = MaleQueue.objects.get_or_create()
             queue.users.add(user)
-        elif user.sex == 'female':
+        elif user.sex == 'Female':
             queue, created = FemaleQueue.objects.get_or_create()
             queue.users.add(user)
         else:
@@ -101,3 +103,48 @@ class CurrentMatchView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'No current match found'}, status=status.HTTP_404_NOT_FOUND)
+        
+logger = logging.getLogger(__name__)
+
+class SubmitReviewView(APIView):
+    def post(self, request):
+        rating = request.data.get('rating')
+        
+        # デバッグ用ログ
+        if rating is None:
+            print("Rating is missing in the request.")
+        else:
+            print(f"Received rating: {rating}")
+
+        if not rating:
+            return Response({'error': 'Rating is missing'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            rating = int(rating)
+        except ValueError:
+            return Response({'error': 'Invalid rating value'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if rating < 1 or rating > 5:
+            return Response({'error': 'Rating value must be between 1 and 5'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = request.user
+        matched_user = user.cur_matching
+        
+        if matched_user is None:
+            return Response({'status': 'No current match found to review'}, status=status.HTTP_200_OK)
+
+        # レビューを追加
+        matched_user.add_review(rating)
+
+        # マッチング完了処理
+        user.done = True
+        if matched_user.done:
+            matched_user.semi_comp = False
+            matched_user.save()
+            user.cur_matching = None
+        else:
+            user.semi_comp = True
+            user.cur_matching = None
+        user.save()
+
+        return Response({'status': 'Review submitted successfully', 'new_average_rating': matched_user.review_average}, status=status.HTTP_200_OK)

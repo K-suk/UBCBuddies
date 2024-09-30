@@ -4,28 +4,31 @@ from templated_mail.mail import BaseEmailMessage
 from django.conf import settings
 
 class EmailManager(BaseEmailMessage):
-    def send(self, to, *args, **kwags):
+    def send(self, to, *args, **kwargs):
         self.render()
         self.to = to
-        self.cc = kwags.pop('cc', [])
-        self.bcc = kwags.pop('bcc', [])
-        self.reply_to = kwags.pop('reply_to', [])
-        self.from_email = kwags.pop(
+        self.cc = kwargs.pop('cc', [])
+        self.bcc = kwargs.pop('bcc', [])
+        self.reply_to = kwargs.pop('reply_to', [])
+        self.from_email = kwargs.pop(
             'from_email',
-            'Buddies <' + settings.DEFAULT_FROM_EMAIL + '>'
+            settings.DEFAULT_FROM_EMAIL
         )
-        super(BaseEmailMessage, self).send(*args, **kwags)
+        print(f"From Email: {self.from_email}")  # メールアドレスの確認
+        super(BaseEmailMessage, self).send(*args, **kwargs)
         
-class ActivationEmail(EmailManager):
+class ActivationEmail(BaseEmailMessage):
     template_name = 'accounts/activation.html'
-    
+
     def get_context_data(self):
         context = super().get_context_data()
         user = context.get("user")
-        context["first_name"] = user.first_name
-        context["last_name"] = user.last_name
+        context["name"] = user.name
         context["uid"] = utils.encode_uid(user.pk)
-        context["url"] = settings.DJOSER["ACTIVATION_URL"].format(**context)
+        context["token"] = default_token_generator.make_token(user)
+        context["protocol"] = self.request.scheme
+        context["domain"] = self.request.get_host()
+        context["url"] = settings.DJOSER["ACTIVATION_URL"].format(uid=context["uid"], token=context["token"])
         return context
     
 class ConfirmationEmail(EmailManager):
@@ -34,8 +37,7 @@ class ConfirmationEmail(EmailManager):
     def get_context_data(self):
         context = super().get_context_data()
         user = context.get("user")
-        context["first_name"] = user.first_name
-        context["last_name"] = user.last_name
+        context["name"] = user.name
         return context
     
 class PasswordResetEmail(EmailManager):
@@ -44,8 +46,7 @@ class PasswordResetEmail(EmailManager):
     def get_context_data(self):
         context = super().get_context_data()
         user = context.get("user")
-        context["first_name"] = user.first_name
-        context["last_name"] = user.last_name
+        context["name"] = user.name
         context["uid"] = utils.encode_uid(user.pk)
         context["token"] = default_token_generator.make_token(user)
         context["url"] = settings.DJOSER["PASSWORD_RESET_CONFIRM_URL"].format(**context)
@@ -57,8 +58,7 @@ class PasswordChangedConfirmationEmail(EmailManager):
     def get_context_data(self):
         context = super().get_context_data()
         user = context.get("user")
-        context["first_name"] = user.first_name
-        context["last_name"] = user.last_name
+        context["name"] = user.name
         return context
     
 class UsernameResetEmail(EmailManager):
@@ -67,8 +67,7 @@ class UsernameResetEmail(EmailManager):
     def get_context_data(self):
         context = super().get_context_data()
         user = context.get("user")
-        context["first_name"] = user.first_name
-        context["last_name"] = user.last_name
+        context["name"] = user.name
         context["uid"] = utils.encode_uid(user.pk)
         context["token"] = default_token_generator.make_token(user)
         context["url"] = settings.DJOSER["USERNAME_RESET_CONFIRM_URL"].format(**context)
@@ -80,6 +79,5 @@ class UsernamChangedConfirmationEmail(EmailManager):
     def get_context_data(self):
         context = super().get_context_data()
         user = context.get("user")
-        context["first_name"] = user.first_name
-        context["last_name"] = user.last_name
+        context["name"] = user.name
         return context

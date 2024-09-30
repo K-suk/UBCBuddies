@@ -1,11 +1,11 @@
 {% block subject %}
-本登録のご案内
+To reset your email
 {% endblock subject %}
 
 {% block text_body %}
-{{ first_name }} {{ last_name }}様
+Mr. or Ms.{{ name }}
 
-以下のリンクからメールアドレスのリセットを完了
+Please reset your email address from the link below
 {{ protocol }}://{{ domain }}//{{ url|safe }}
 
 {% endblock text_body %}
