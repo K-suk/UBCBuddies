@@ -57,7 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     cur_matching = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='current_match')  # 現在のマッチ
     matching_history = models.ManyToManyField('self', symmetrical=False)
-    bio = models.TextField(blank=True, null=True)
+    bio = models.TextField(blank=True, null=True, max_length=1024)
     profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
     wait = models.BooleanField(default=False)  # 待機中かどうかを示すフラグ
     done = models.BooleanField(default=True)  # マッチングが完了したかどうかを示すフラグ
