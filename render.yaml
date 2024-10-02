@@ -7,7 +7,7 @@ services:
     branch: main
     healthCheckPath: /
     buildCommand: "./build.sh"
-    startCommand: "gunicorn ubcbuddies.wsgi:application"
+    startCommand: "gunicorn buddies.wsgi:application"
     envVars:
       - key: SECRET_KEY
         generateValue: true
