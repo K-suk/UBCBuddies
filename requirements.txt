@@ -16,6 +16,7 @@ djangorestframework-simplejwt==5.3.1
 djoser==2.2.3
 environ==1.0
 filelock==3.16.1
+gunicorn==23.0.0
 html5lib==1.1
 idna==3.7
 license-expression==30.3.1
