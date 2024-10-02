@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-secret-key')
 DEBUG = env('DEBUG')
 
 # ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = ['0.0.0.0:8000','https://ubcbuddies.onrender.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
