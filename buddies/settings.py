@@ -65,6 +65,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Next.js開発サーバーのURL
+    "https://next-buddies.vercel.app/"
 ]
 
 CORS_ALLOW_HEADERS = [
