@@ -1,13 +1,13 @@
 services:
   - type: web
-    name: ubcbuddies
+    name: UBCBuddies
     env: python
     region: oregon
     plan: free
     branch: main
     healthCheckPath: /
     buildCommand: "./build.sh"
-    startCommand: "gunicorn buddies.wsgi:application"
+    startCommand: "gunicorn UBCBuddies.wsgi:application"
     envVars:
       - key: SECRET_KEY
         generateValue: true
