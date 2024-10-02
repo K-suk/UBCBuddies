@@ -52,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -101,10 +102,21 @@ WSGI_APPLICATION = "buddies.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DB_NAME", "postgres"),  # 環境変数から取得、デフォルトでpostgres
+        "USER": os.environ.get("DB_USER", "postgres"),  # 環境変数から取得、デフォルトでpostgres
+        "PASSWORD": os.environ.get("DB_PASSWORD", ""),  # 環境変数から取得
+        "HOST": os.environ.get("DB_HOST", "db.supabase.co"),  # 環境変数から取得、デフォルトでSupabaseのホスト
+        "PORT": os.environ.get("DB_PORT", "5432"),  # 環境変数から取得、デフォルトで5432
     }
 }
 
@@ -238,3 +250,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 2621440  # 2.5 MB
+
+SUPERUSER_NAME = env("SUPERUSER_NAME")
+SUPERUSER_EMAIL = env("SUPERUSER_EMAIL")
+SUPERUSER_PASSWORD = env("SUPERUSER_PASSWORD")

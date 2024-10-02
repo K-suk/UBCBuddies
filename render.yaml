@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: ubcbuddies
+    env: python
+    region: oregon
+    plan: free
+    branch: main
+    healthCheckPath: /
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn ubcbuddies.wsgi:application"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
+
+    autoDeploy: true
