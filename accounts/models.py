@@ -56,9 +56,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True
     )
     cur_matching = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='current_match')  # 現在のマッチ
-    matching_history = models.ManyToManyField('self', symmetrical=False)
+    matching_history = models.ManyToManyField('self', symmetrical=False, null=True, blank=True)
     bio = models.TextField(blank=True, null=True, max_length=1024)
-    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+    profile_image = models.URLField(max_length=255, null=True, blank=True) 
     wait = models.BooleanField(default=False)  # 待機中かどうかを示すフラグ
     done = models.BooleanField(default=True)  # マッチングが完了したかどうかを示すフラグ
     review_count = models.PositiveIntegerField(default=0)  # レビュー数

@@ -40,6 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ('is_active', 'is_staff', 'created_at', 'updated_at')
         
 class UserUpdateSerializer(serializers.ModelSerializer):
+    profile_image = serializers.URLField(required=False, allow_blank=True)
     class Meta:
         model = User
         fields = ('name', 'contact_address', 'bio', 'age', 'profile_image')
