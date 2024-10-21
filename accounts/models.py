@@ -35,7 +35,6 @@ class UserManager(BaseUserManager):
             **extra_fields,
         )
 
-
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         verbose_name=_("email"),

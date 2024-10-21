@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import FemaleDatingQueue, FemaleDrinkQueue, FemaleGymQueue, MaleDatingQueue, MaleDrinkQueue, MaleGymQueue, MaleQueue, FemaleQueue
+from .models import DailyUserCount, FemaleDatingQueue, FemaleDrinkQueue, FemaleGymQueue, MaleDatingQueue, MaleDrinkQueue, MaleGymQueue, MaleQueue, FemaleQueue
 
 class MaleQueueAdmin(admin.ModelAdmin):
     list_display = ('id', 'user_count')
@@ -64,6 +64,14 @@ class FemaleDatingQueueAdmin(admin.ModelAdmin):
     def user_count(self, obj):
         return obj.users.count()
     user_count.short_description = 'User Count'
+    
+class NewUsersAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user_count', 'date')
+    filter_horizontal = ('users',)
+
+    def user_count(self, obj):
+        return obj.users.count()
+    user_count.short_description = 'User Count'
 
 admin.site.register(MaleQueue, MaleQueueAdmin)
 admin.site.register(FemaleQueue, FemaleQueueAdmin)
@@ -73,3 +81,4 @@ admin.site.register(MaleDrinkQueue, MaleDrinkQueueAdmin)
 admin.site.register(FemaleDrinkQueue, FemaleDrinkQueueAdmin)
 admin.site.register(MaleDatingQueue, MaleDatingQueueAdmin)
 admin.site.register(FemaleDatingQueue, FemaleDatingQueueAdmin)
+admin.site.register(DailyUserCount, NewUsersAdmin)

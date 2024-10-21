@@ -2,6 +2,8 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 
+from match.models import DailyUserCount
+
 User = get_user_model()
 
 SEX_CHOICES = [
