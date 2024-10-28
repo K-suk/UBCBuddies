@@ -17,7 +17,7 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env(DEBUG=(bool, True))
+env = environ.Env(DEBUG=(bool, False))
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
@@ -29,8 +29,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-secret-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['*']
-# ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 
 # Application definition
@@ -62,6 +62,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Next.js開発サーバーのURL
@@ -148,18 +149,19 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "America/Vancouver"
 
 USE_I18N = True
 
 USE_TZ = True
 
+# # settings.py
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,
 #     'handlers': {
 #         'console': {
-#             'level': 'DEBUG',
+#             'level': 'DEBUG',  # DEBUGレベルでログを表示
 #             'class': 'logging.StreamHandler',
 #         },
 #     },
@@ -168,8 +170,14 @@ USE_TZ = True
 #             'handlers': ['console'],
 #             'level': 'DEBUG',
 #         },
+#         'accounts': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
 #     },
 # }
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -248,16 +256,16 @@ DJOSER = {
 }
 
 AUTH_USER_MODEL = 'accounts.User'
-# SECURE_HSTS_SECONDS = 60
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # サブドメインも含める場合
-# SECURE_HSTS_PRELOAD = True  # HSTS preloadリストへの追加
-# SECURE_SSL_REDIRECT = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-# SECURE_CONTENT_TYPE_NOSNIFF = True
-# SECURE_BROWSER_XSS_FILTER = True
-# X_FRAME_OPTIONS = 'DENY'
-# DATA_UPLOAD_MAX_MEMORY_SIZE = 2621440  # 2.5 MB
+SECURE_HSTS_SECONDS = 60
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # サブドメインも含める場合
+SECURE_HSTS_PRELOAD = True  # HSTS preloadリストへの追加
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+DATA_UPLOAD_MAX_MEMORY_SIZE = 2621440  # 2.5 MB
 
 SUPERUSER_NAME = env("SUPERUSER_NAME")
 SUPERUSER_EMAIL = env("SUPERUSER_EMAIL")

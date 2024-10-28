@@ -6,4 +6,4 @@ class AccountsConfig(AppConfig):
     name = "accounts"
     
     def ready(self):
-        import accounts.signals  # signalsをインポートして有効化
+        import accounts.signals

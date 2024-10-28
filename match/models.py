@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.db import models, transaction
+import logging
 
 User = get_user_model()
 
@@ -64,7 +66,6 @@ class FemaleDatingQueue(models.Model):
     def __str__(self):
         return f"Female Queue: {self.users.count()} users"
     
-
 class DailyUserCount(models.Model):
     date = models.DateField(unique=True)
     users = models.ManyToManyField(User, related_name='new_users', blank=True)

@@ -100,6 +100,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']  # スーパーユーザー作成時にemailも設定する
+    
+    def get_short_name(self):
+        return self.name if self.name else self.email
 
     def __str__(self):
         return self.email

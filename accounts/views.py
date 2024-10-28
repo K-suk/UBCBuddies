@@ -6,7 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import UserUpdateSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.views import APIView
+import logging
+from djoser.views import UserViewSet
 
 User = get_user_model()
 
@@ -31,3 +32,6 @@ class UserUpdateView(generics.UpdateAPIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+logger = logging.getLogger(__name__)
